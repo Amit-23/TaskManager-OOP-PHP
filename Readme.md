@@ -1,0 +1,6 @@
+- **Key Features**
+  - **Object-Oriented PHP**: Clean and maintainable code structure using PHP's OOP principles.
+  - **MySQL Integration**: Efficient task management and storage with a MySQL database.
+  - **Real-Time Status Updates**: Track task status dynamically with options like started, in progress, completed, and overdue.
+  - **Server-Side Validation**: Ensures data integrity and security with robust validation mechanisms.
+  - **Responsive Design**: Utilizes Bootstrap to provide a user-friendly experience across all devices.

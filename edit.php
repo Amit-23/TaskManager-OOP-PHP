@@ -1,23 +1,18 @@
 <?php
 session_start();
-include "./partials/conn.php"; 
+include "./partials/conn.php"; // Include the refactore
 
-$database = new Database();
-$conn = $database->connect();
-
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0; // Get the task ID from the URL
+$database = new Database(); 
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0; // Get the task
 
 // Fetch the task details based on the ID
 if ($id > 0) {
-    $sql = "SELECT * FROM todo WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $task = $result->fetch_assoc(); // Fetch the task data as an associative array
+    $tasks = $database->getData(); // Fetch all tasks
+    $task = array_filter($tasks, fn($t) => $t['id'] == $id); // F
+    $task = reset($task); 
 
-    if (!$task) {
-        // If no task is found with that ID, redirect to the todoitems.php with an error message
+    if (empty($task)) {
+        // If no task is found with that ID, redirect to the todoitems.php with 
         header("Location: todoitems.php?message=Task not found");
         exit;
     }
@@ -32,7 +27,7 @@ $startdate = $task['startdate'];
 $enddate = $task['enddate'];
 $status = $task['status'];
 
-// Handle the form submission to update the task
+// Handle the form submission to
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Task Name validation
     if (empty($_POST['taskname'])) {
@@ -80,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!doctype html>
-<html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     </style>
 </head>
-<body>
+
 <div class="container">
     <div class="form-container">
         <h2>Edit Task</h2>
@@ -151,7 +146,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="mb-3">
                 <label for="status" class="form-label">Task Status *</label>
                 <select class="form-select" id="status" name="status">
-                    <option value="">Select Status</option>
                     <option value="started" <?= $status == "started" ? 'selected' : '' ?>>Started</option>
                     <option value="inprogress" <?= $status == "inprogress" ? 'selected' : '' ?>>In Progress</option>
                     <option value="completed" <?= $status == "completed" ? 'selected' : '' ?>>Completed</option>
@@ -166,5 +160,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>

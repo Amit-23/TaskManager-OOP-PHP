@@ -1,23 +1,18 @@
 <?php
-require "./partials/conn.php"; // Include the database connection file
+session_start();
+include "./partials/conn.php"; // Include the refactored Database class
 
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']); // Get the task ID from the URL and convert it to an integer
+$database = new Database(); // Create an instance of the Database class
 
-    $database = new Database();
-    $database->connect();
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0; // Get the task ID from the URL
 
-    // Call the deleteData method to remove the task
-    if ($database->deleteData($id)) {
-        // If successful, redirect back to the todoitems.php with a success message
-        header("Location: todoitems.php?message=Task deleted successfully");
-        exit;
-    } else {
-        // If there was an error, display an error message
-        echo "Error deleting task.";
-    }
+// Call the deleteData method to remove the task
+if ($id > 0 && $database->deleteData($id)) {
+    // If successful, redirect back to the todoitems.php with a success message
+    header("Location: todoitems.php?message=Task deleted successfully");
+    exit;
 } else {
-    // Redirect back if no ID is provided
-    header("Location: todoitems.php");
+    // If there was an error, display an error message
+    header("Location: todoitems.php?message=Error deleting task or invalid task ID");
     exit;
 }
